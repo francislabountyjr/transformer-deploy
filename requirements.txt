@@ -90,7 +90,7 @@ pickleshare==0.7.5
 Pillow==9.0.1
 platformdirs==2.4.1
 pluggy==1.0.0
-polygraphy==0.35.1
+# polygraphy==0.35.1
 prettytable==3.0.0
 prometheus-client==0.13.1
 prompt-toolkit==3.0.27
