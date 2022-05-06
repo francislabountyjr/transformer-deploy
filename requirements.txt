@@ -69,14 +69,14 @@ nltk==3.6.7
 notebook==6.4.8
 numba==0.55.1
 numpy==1.21.5
-nvidia-cublas-cu11==2021.12.3
-nvidia-cublas-cu116==11.8.1.74
-nvidia-cuda-runtime-cu11==2021.12.20
-nvidia-cuda-runtime-cu116==11.6.55
-nvidia-cudnn-cu11==2022.1.13
-nvidia-cudnn-cu115==8.3.2.44
-nvidia-pyindex==1.0.9
-nvidia-tensorrt==8.2.2.1
+# nvidia-cublas-cu11==2021.12.3
+# nvidia-cublas-cu116==11.8.1.74
+# nvidia-cuda-runtime-cu11==2021.12.20
+# nvidia-cuda-runtime-cu116==11.6.55
+# nvidia-cudnn-cu11==2022.1.13
+# nvidia-cudnn-cu115==8.3.2.44
+# nvidia-pyindex==1.0.9
+# nvidia-tensorrt==8.2.2.1
 onnx==1.10.2
 onnx-graphsurgeon==0.3.14
 onnxruntime-gpu==1.9.0
