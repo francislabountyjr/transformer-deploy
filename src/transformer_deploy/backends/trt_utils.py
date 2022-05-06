@@ -115,8 +115,7 @@ def build_engine(
                     # File path needed for models with external dataformat
                     parser.parse(model=f.read(), path=onnx_file_path)
                 last_layer = network_definition.get_layer(network_definition.num_layers - 1)
-                if not last_layer.get_output(0):
-                    network_definition.mark_output(last_layer.get_output(0))
+                network_definition.mark_output(last_layer.get_output(0))
                 profile: IOptimizationProfile = builder.create_optimization_profile()
                 for num_input in range(network_definition.num_inputs):
                     profile.set_shape(
