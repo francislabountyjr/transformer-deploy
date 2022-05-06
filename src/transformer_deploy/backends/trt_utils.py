@@ -136,7 +136,9 @@ def build_engine(
                     t0 = time()
                     print('Checkpoint 3')
                     trt_engine = builder.build_serialized_network(network_definition, config)
+                    print('Checkpoint 4')
                     engine: ICudaEngine = runtime.deserialize_cuda_engine(trt_engine)
+                    print('Checkpoint 5')
                     logger.log(msg=f"building engine took {time() - t0:4.1f} seconds", severity=trt.ILogger.WARNING)
                     assert engine is not None, "error during engine generation, check error messages above :-("
                     return engine
