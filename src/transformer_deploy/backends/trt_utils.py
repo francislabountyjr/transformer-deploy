@@ -138,8 +138,8 @@ def build_engine(
                     logger.log(msg=f"building engine took {time() - t0:4.1f} seconds", severity=trt.ILogger.WARNING)
                     assert engine is not None, "error during engine generation, check error messages above :-("
                     return engine
-                except Exception as E:
-                    print("Error:", E)
+                except Exception as e:
+                    print(f"Error: {e}")
 
 
 def get_output_tensors(

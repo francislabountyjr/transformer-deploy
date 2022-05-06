@@ -22,17 +22,20 @@ if args.Input and args.Output:
     max_seq_len = 2048
     batch_size = 4
 
-    engine = build_engine(
-        runtime=runtime,
-        onnx_file_path=args.Input,
-        logger=trt_logger,
-        min_shape=(1, 0),
-        optimal_shape=(batch_size, int(max_seq_len*0.5)),
-        max_shape=(batch_size, max_seq_len),
-        workspace_size=100000 * 1024 * 1024,
-        fp16=True,
-        int8=False,
-    )
+    try:
+        engine = build_engine(
+            runtime=runtime,
+            onnx_file_path=args.Input,
+            logger=trt_logger,
+            min_shape=(1, 0),
+            optimal_shape=(batch_size, int(max_seq_len*0.5)),
+            max_shape=(batch_size, max_seq_len),
+            workspace_size=100000 * 1024 * 1024,
+            fp16=True,
+            int8=False,
+        )
+    except Exception as e:
+        print(f"Error: {e}")
 
     with open(args.Output, 'wb') as f:
         f.write(engine.serialize())
