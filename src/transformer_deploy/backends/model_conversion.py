@@ -1,6 +1,6 @@
 import tensorrt as trt
 from tensorrt.tensorrt import Logger, Runtime
-from transformer_deploy.backends.trt_utils import build_engine
+from trt_utils import build_engine
 import argparse
 
 
