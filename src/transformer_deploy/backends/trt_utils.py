@@ -94,49 +94,52 @@ def build_engine(
             flags=1 << int(trt.NetworkDefinitionCreationFlag.EXPLICIT_BATCH)
         ) as network_definition:  # type: INetworkDefinition
             with trt.OnnxParser(network_definition, logger) as parser:  # type: OnnxParser
-                builder.max_batch_size = max_shape[0]  # max batch size
-                config: IBuilderConfig = builder.create_builder_config()
-                config.max_workspace_size = workspace_size
-                # to enable complete trt inspector debugging, only for TensorRT >= 8.2
-                # config.profiling_verbosity = trt.ProfilingVerbosity.DETAILED
-                # disable CUDNN optimizations
-                config.set_tactic_sources(
-                    tactic_sources=1 << int(trt.TacticSource.CUBLAS) | 1 << int(trt.TacticSource.CUBLAS_LT)
-                )
-                if int8:
-                    config.set_flag(trt.BuilderFlag.INT8)
-                if fp16:
-                    config.set_flag(trt.BuilderFlag.FP16)
-                config.set_flag(trt.BuilderFlag.DISABLE_TIMING_CACHE)
-                # https://github.com/NVIDIA/TensorRT/issues/1196 (sometimes big diff in output when using FP16)
-                config.set_flag(trt.BuilderFlag.OBEY_PRECISION_CONSTRAINTS)
-                logger.log(msg="parsing trt model", severity=trt.ILogger.WARNING)
-                with open(onnx_file_path, "rb") as f:
-                    # File path needed for models with external dataformat
-                    parser.parse(model=f.read(), path=onnx_file_path)
-                last_layer = network_definition.get_layer(network_definition.num_layers - 1)
-                network_definition.mark_output(last_layer.get_output(0))
-                profile: IOptimizationProfile = builder.create_optimization_profile()
-                for num_input in range(network_definition.num_inputs):
-                    profile.set_shape(
-                        input=network_definition.get_input(num_input).name,
-                        min=min_shape,
-                        opt=optimal_shape,
-                        max=max_shape,
+                try:
+                    builder.max_batch_size = max_shape[0]  # max batch size
+                    config: IBuilderConfig = builder.create_builder_config()
+                    config.max_workspace_size = workspace_size
+                    # to enable complete trt inspector debugging, only for TensorRT >= 8.2
+                    # config.profiling_verbosity = trt.ProfilingVerbosity.DETAILED
+                    # disable CUDNN optimizations
+                    config.set_tactic_sources(
+                        tactic_sources=1 << int(trt.TacticSource.CUBLAS) | 1 << int(trt.TacticSource.CUBLAS_LT)
                     )
-                config.add_optimization_profile(profile)
-                if fp16:
-                    network_definition = fix_fp16_network(network_definition)
+                    if int8:
+                        config.set_flag(trt.BuilderFlag.INT8)
+                    if fp16:
+                        config.set_flag(trt.BuilderFlag.FP16)
+                    config.set_flag(trt.BuilderFlag.DISABLE_TIMING_CACHE)
+                    # https://github.com/NVIDIA/TensorRT/issues/1196 (sometimes big diff in output when using FP16)
+                    config.set_flag(trt.BuilderFlag.OBEY_PRECISION_CONSTRAINTS)
+                    logger.log(msg="parsing trt model", severity=trt.ILogger.WARNING)
+                    with open(onnx_file_path, "rb") as f:
+                        # File path needed for models with external dataformat
+                        parser.parse(model=f.read(), path=onnx_file_path)
+                    last_layer = network_definition.get_layer(network_definition.num_layers - 1)
+                    network_definition.mark_output(last_layer.get_output(0))
+                    profile: IOptimizationProfile = builder.create_optimization_profile()
+                    for num_input in range(network_definition.num_inputs):
+                        profile.set_shape(
+                            input=network_definition.get_input(num_input).name,
+                            min=min_shape,
+                            opt=optimal_shape,
+                            max=max_shape,
+                        )
+                    config.add_optimization_profile(profile)
+                    if fp16:
+                        network_definition = fix_fp16_network(network_definition)
 
-                logger.log(
-                    msg="building engine. depending on model size this may take a while", severity=trt.ILogger.WARNING
-                )
-                t0 = time()
-                trt_engine = builder.build_serialized_network(network_definition, config)
-                engine: ICudaEngine = runtime.deserialize_cuda_engine(trt_engine)
-                logger.log(msg=f"building engine took {time() - t0:4.1f} seconds", severity=trt.ILogger.WARNING)
-                assert engine is not None, "error during engine generation, check error messages above :-("
-                return engine
+                    logger.log(
+                        msg="building engine. depending on model size this may take a while", severity=trt.ILogger.WARNING
+                    )
+                    t0 = time()
+                    trt_engine = builder.build_serialized_network(network_definition, config)
+                    engine: ICudaEngine = runtime.deserialize_cuda_engine(trt_engine)
+                    logger.log(msg=f"building engine took {time() - t0:4.1f} seconds", severity=trt.ILogger.WARNING)
+                    assert engine is not None, "error during engine generation, check error messages above :-("
+                    return engine
+                except Exception as E:
+                    print("Error:", E)
 
 
 def get_output_tensors(
