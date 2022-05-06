@@ -113,7 +113,7 @@ def build_engine(
                 logger.log(msg="parsing trt model", severity=trt.ILogger.WARNING)
                 with open(onnx_file_path, "rb") as f:
                     # File path needed for models with external dataformat
-                    parser.parse(model=f.read(), path=onnx_file_path)
+                    parser.parse(model=f.read(), path=onnx_file_path.replace('/model.onnx', ''))
                 profile: IOptimizationProfile = builder.create_optimization_profile()
                 for num_input in range(network_definition.num_inputs):
                     profile.set_shape(
