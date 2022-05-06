@@ -23,6 +23,7 @@ if args.Input and args.Output:
     batch_size = 4
 
     try:
+        print('Checkpoint 1')
         engine = build_engine(
             runtime=runtime,
             onnx_file_path=args.Input,

@@ -115,6 +115,7 @@ def build_engine(
                     with open(onnx_file_path, "rb") as f:
                         # File path needed for models with external dataformat
                         parser.parse(model=f.read(), path=onnx_file_path)
+                    print('Checkpoint 2')
                     last_layer = network_definition.get_layer(network_definition.num_layers - 1)
                     network_definition.mark_output(last_layer.get_output(0))
                     profile: IOptimizationProfile = builder.create_optimization_profile()
@@ -133,6 +134,7 @@ def build_engine(
                         msg="building engine. depending on model size this may take a while", severity=trt.ILogger.WARNING
                     )
                     t0 = time()
+                    print('Checkpoint 3')
                     trt_engine = builder.build_serialized_network(network_definition, config)
                     engine: ICudaEngine = runtime.deserialize_cuda_engine(trt_engine)
                     logger.log(msg=f"building engine took {time() - t0:4.1f} seconds", severity=trt.ILogger.WARNING)
