@@ -27,7 +27,7 @@ if args.Input and args.Output:
         onnx_file_path=args.Input,
         logger=trt_logger,
         min_shape=(1, max_seq_len),
-        optimal_shape=(batch_size, max_seq_len*0.5),
+        optimal_shape=(batch_size, int(max_seq_len*0.5)),
         max_shape=(batch_size, max_seq_len),
         workspace_size=100000 * 1024 * 1024 * 20,
         fp16=True,
