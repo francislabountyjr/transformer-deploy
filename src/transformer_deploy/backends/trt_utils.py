@@ -114,7 +114,7 @@ def build_engine(
                     logger.log(msg="parsing trt model", severity=trt.ILogger.WARNING)
                     with open(onnx_file_path, "rb") as f:
                         # File path needed for models with external dataformat
-                        parser.parse(model=f.read(), path=onnx_file_path.replace('/model.onnx', ''))
+                        parser.parse(model=f.read(), path=onnx_file_path.replace('model.onnx', ''))
                     print('Checkpoint 2')
                     last_layer = network_definition.get_layer(network_definition.num_layers - 1)
                     network_definition.mark_output(last_layer.get_output(0))
