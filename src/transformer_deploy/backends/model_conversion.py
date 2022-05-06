@@ -29,7 +29,7 @@ if args.Input and args.Output:
         min_shape=(1, 0),
         optimal_shape=(batch_size, int(max_seq_len*0.5)),
         max_shape=(batch_size, max_seq_len),
-        workspace_size=100000 * 1024 * 1024 * 20,
+        workspace_size=100000 * 1024 * 1024,
         fp16=True,
         int8=False,
     )
